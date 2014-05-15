@@ -78,6 +78,22 @@ def caixaBuscarData(request)
       dataInicial = datetime.strptime(request.POST.get('Data_Inicial', ''), '%d/%m/%Y %H:%M:%S')
       dataFinal = datetime.strptime(request.POST.get('Data_Final', ''), '%d/%m/%Y %H:%M:%S')      
       Conta.objects.filter(pub_date__range=(dataInicial, dataFinal))
+      
+def caixaFluxo(request)
+    if request.method == 'POST'
+      dataInicial = datetime.strptime(request.POST.get('Data_Inicial', ''), '%d/%m/%Y %H:%m:%s')
+      dataFinal = datetime.strptime(request.POST.get('Data_Final', ''), '%d/%m/%Y %H:%m:%s')
+      total=0
+      
+      try:
+        contas = Conta.objects.filter(data__range=(dataInicial,dataFinal))
+        for conta in contas:
+          total+=conta.valor
+        except:
+          contas=[]
+        return render(request, 'caixas/formCaixaFluxo.html', {'contas' : contas, 'total' : total, 'Data_Inicial' : dataInicial, 'Data_Final' : dataFinal})
+      return render(request, 'caixas/formCaixaFluxo.html', {'contas' : []})
+      
     
 
 

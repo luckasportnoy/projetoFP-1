@@ -73,9 +73,11 @@ def caixaExcluir(request, pk=0):
     except:
         return HttpResponseRedirect('/caixas/')
 
-
-
-
+def caixaBuscarData(request)
+    if request.method == 'POST':    
+      dataInicial = datetime.strptime(request.POST.get('Data_Inicial', ''), '%d/%m/%Y %H:%M:%S')
+      dataFinal = datetime.strptime(request.POST.get('Data_Final', ''), '%d/%m/%Y %H:%M:%S')      
+      Conta.objects.filter(pub_date__range=(dataInicial, dataFinal))
     
 
 

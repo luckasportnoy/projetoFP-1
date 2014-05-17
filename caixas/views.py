@@ -13,32 +13,32 @@ from pessoas.models import Pessoa
 
 
 def caixaListar(request):
-    contas = Conta.objects.all()[0:10]
+  contas = Conta.objects.all()[0:10]
 
-    return render(request, 'caixas/listaCaixas.html', {'contas': contas})
+  return render(request, 'caixas/listaCaixas.html', {'contas': contas})
 
 
 def caixaAdicionar(request):
-    pessoas = Pessoa.objects.all().order_by('nome')
+  pessoas = Pessoa.objects.all().order_by('nome')
 
-    return render(request, 'caixas/formCaixas.html', {'pessoas': pessoas})
+  return render(request, 'caixas/formCaixas.html', {'pessoas': pessoas})
 
 def caixaSalvar(request):
-    if request.method == 'POST':
-        codigo = request.POST.get('codigo', '0')
+  if request.method == 'POST':
+    codigo = request.POST.get('codigo', '0')
 
-        try:
-            conta = Conta.objects.get(pk=codigo)
-        except:
-            conta = Conta()
+    try:
+      conta = Conta.objects.get(pk=codigo)
+    except:
+      conta = Conta()
 
-        conta.pessoa_id = request.POST.get('pessoa_id', '1')
-        conta.tipo = request.POST.get('tipo', '').upper()
-        conta.descricao = request.POST.get('descricao', 'CONTA SEM DESCRIÇÃO').upper()
-        conta.valor = request.POST.get('valor', '0.00').replace(',','.')
-        conta.data = datetime.strptime(request.POST.get('data', ''), '%d/%m/%Y %H:%M:%S')
+      conta.pessoa_id = request.POST.get('pessoa_id', '1')
+      conta.tipo = request.POST.get('tipo', '').upper()
+      conta.descricao = request.POST.get('descricao', 'CONTA SEM DESCRIÇÃO').upper()
+      conta.valor = request.POST.get('valor', '0.00').replace(',','.')
+      conta.data = datetime.strptime(request.POST.get('data', ''), '%d/%m/%Y %H:%M:%S')
 
-        conta.save()
+      conta.save()
     return HttpResponseRedirect('/caixas/')
 
 def caixaPesquisar(request):
@@ -58,10 +58,10 @@ def caixaPesquisar(request):
 
 def caixaEditar(request, pk=0):
     try:
-        conta = Conta.objects.get(pk=pk)
-        pessoas = Pessoa.objects.all().order_by('nome')
+      conta = Conta.objects.get(pk=pk)
+      pessoas = Pessoa.objects.all().order_by('nome')
     except:
-        return HttpResponseRedirect('/caixas/')
+      return HttpResponseRedirect('/caixas/')
 
     return render(request, 'caixas/formCaixas.html', {'conta': conta, 'pessoas':pessoas})
 
@@ -73,26 +73,22 @@ def caixaExcluir(request, pk=0):
     except:
         return HttpResponseRedirect('/caixas/')
 
-def caixaBuscarData(request)
-    if request.method == 'POST':    
-      dataInicial = datetime.strptime(request.POST.get('Data_Inicial', ''), '%d/%m/%Y %H:%M:%S')
-      dataFinal = datetime.strptime(request.POST.get('Data_Final', ''), '%d/%m/%Y %H:%M:%S')      
-      Conta.objects.filter(pub_date__range=(dataInicial, dataFinal))
-      
-def caixaFluxo(request)
-    if request.method == 'POST'
-      dataInicial = datetime.strptime(request.POST.get('Data_Inicial', ''), '%d/%m/%Y %H:%m:%s')
-      dataFinal = datetime.strptime(request.POST.get('Data_Final', ''), '%d/%m/%Y %H:%m:%s')
-      total=0
-      
-      try:
-        contas = Conta.objects.filter(data__range=(dataInicial,dataFinal))
-        for conta in contas:
-          total+=conta.valor
+def caixaFluxo(request):
+    if request.method == 'POST':
+        data_inicial = datetime.strptime(request.POST.get('data_inicial', ''), '%d/%m/%Y %H:%M:%S')
+        data_final = datetime.strptime(request.POST.get('data_final', ''), '%d/%m/%Y %H:%M:%S')
+        total = 0
+
+        try:
+            contas = Conta.objects.filter(data__range=(data_inicial, data_final))
+            for conta in contas:
+                total += conta.valor
         except:
-          contas=[]
-        return render(request, 'caixas/formCaixaFluxo.html', {'contas' : contas, 'total' : total, 'Data_Inicial' : dataInicial, 'Data_Final' : dataFinal})
-      return render(request, 'caixas/formCaixaFluxo.html', {'contas' : []})
+            contas = []
+
+        return render(request, 'caixas/formCaixaFluxo.html', {'contas' : contas, 'total': total ,'data_inicial': data_inicial, 'data_final': data_final})
+
+    return render(request, 'caixas/formCaixaFluxo.html', {'contas' : []})
       
     
 

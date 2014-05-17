@@ -1,61 +1,71 @@
 {% extends 'base.html' %}
 
-{% block titulo %} Fluxo de Caixa {% endblock titulo%}
+{% block titulo %} Fluxo de Caixa {% endblock titulo %}
 
 {% block conteudo %}
 <div class="container">
-  <form class="Form_Horizontal" action="/caixas/fluxo" method="POST" role="form">{% csrf_token %}
-    <div class="Col-sm-4">
-      <label for="datetimepicker"><b>Data Inicial</b></label>
-      <p class="visible-print">{{ dataInicial|date:"d/m/Y H:i:s"}}</p>
-      <div id="datetimepicker" class="input-group date hidden-print">
-        <label for="datetimepicker1" class=""><b>Data Final</b></label>
-        <p class="visible-print">{{dataFinal|date:"d/m/Y H:i:s"}}</p>
-        <input type="text" name="dataFinal" value='{{ dataFinal|date:"d/m/Y H:i:s" }}' class="form_controle">
-        <span class="input-group-addon add-on glyphicon glyphicon-calendar"></span>
+  <form class="Form_Horizontal" action="/caixas/caixaFluxo/" method="POST" role="form">{% csrf_token %}
+    
+      <div class="col-sm-4">
+        <label for="datetimepicker"><b>Data Inicial</b></label>
+        <p class="visible-print">{{ dataInicial|date:"d/m/Y H:m:s"}}</p>
+        <div id="datetimepicker" class="input-group date hidden-print">
+            <input type="text" name="data_inicial" value='{{ data_inicial|date:"d/m/Y H:i:s" }}' class="form-control">
+            <span class="input-group-addon add-on glyphicon glyphicon-calendar"></span>
+        </div>
       </div>
+        
+      <div class="col-sm-4">
+        <label for="datetimepicker1"><b>Data Final</b></label>
+        <p class="visible-print">{{ dataFinal|date:"d/m/Y H:m:s"}}</p>
+        <div id="datetimepicker1" class="input-group date hidden-print">
+            <input type="text" name="data_final" value='{{ data_final|date:"d/m/Y H:i:s" }}' class="form-control">
+            <span class="input-group-addon add-on glyphicon glyphicon-calendar"></span>
+        </div>
+      </div>
+      <div class="col-md-1">
+      <br>
+      <button type="submit" class="btn btn-primary hidden-print"><span class="glyphicon glyphicon-search"></span></button>
     </div>
   </form>
+
 </div>
 
+
+
 <hr>
-<div class="table_resp">
+<div class="table_responsive">
   <table class="table table-striped">
-    <thread>
       <tr>
         <th>Pessoas</th>
-        <th>Valor em R$</th>
         <th>Data</th>
         <th>Tipo</th>
+        <th>Valor em R$</th>
         <th>Descrição</th>
       </tr>
-    </thread>
-    <tbody>
-      {%for conta in contas%}
+      {% for conta in contas %}
         <tr>
           <td><a href="caixas/editar/ {{ conta.pk }}">{{conta.pessoa.nome}}</a></td>
-          <td>{{conta.valor}}</td>
           <td>{{conta.data|date:"d/m/Y"}}</td>
           <td>{{conta.tipo}}</td>
+          <td>{{conta.valor}}</td>
           <td>{{conta.descricao}}</td>
         </tr>
-      {%endfor%}
-    </tbody>
-    {%if total != NULL and contas|length > 0%}
-    <tfoot>
-      <tr class="successful">
+      {% endfor %}
+    {% if total != NULL and contas|length > 0 %}
+      <tr class="bg-primary">
         <th>Total:</th>
         <th></th>
         <th></th>
         <th>{{total}}</th>
+        <th></th>
       </tr>
-    </tfoot>
-    {%endif%}
+    {% endif %}
   </table>
 </div>
 
-  {%if total!=NULL and contas|lenght>0%}
-    <button type="submit" onClick="window.print()" class="btn btn-info col-md-offset-11 col-sm-1 hidden-print">Imprimir</button>
-  {%endif%}
+  {% if total != NULL and contas|length > 0 %}
+    <button type="submit" onClick="window.print()" class="btn btn-primary col-sm-1 hidden-print">Imprimir</button>
+  {% endif %}
 
-{%endblock conteudo%}
+{% endblock conteudo %}
